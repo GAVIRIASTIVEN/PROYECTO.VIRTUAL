@@ -17,7 +17,7 @@ public class PersonaCode {
     private String telefono;
     private String correoElectronico;
     private Date fechaNacimiento;
-    private  String genero;
+    private String genero;
 
     // Constructor
     public PersonaCode(int id, String clave, String nombre, String domicilio, String telefono, 
@@ -55,6 +55,5 @@ public class PersonaCode {
     public void setFechaNacimiento(Date fechaNacimiento) { this.fechaNacimiento = fechaNacimiento; }
 
     public String getGenero() { return genero; }
-    public void setGenero(String genero) { this.genero = genero; }
-    
+    public void setGenero(String genero) { this.genero = genero; }
 }

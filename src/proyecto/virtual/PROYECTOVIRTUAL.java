@@ -17,6 +17,7 @@ import java.util.List;
  * @author Jhon Gaviria
  */
 public class PROYECTOVIRTUAL {
+
     private static final String BASE = "test"; // Nombre de la base de datos
     private static final String URL = "jdbc:mysql://localhost:3306/" + BASE;
     private static final String USER = "root";
@@ -30,7 +31,16 @@ public class PROYECTOVIRTUAL {
         // Ejemplo de uso
         try (Connection con = getConnection()) {
             if (con != null) {
-		System.out.println("Conexión Exitosa!! a la base de datos.");
+                System.out.println("Conexión Exitosa!! a la base de datos.");
+                // Crear
+                PersonaCode nuevaPersona = new PersonaCode(0, "CLAVE123", "Juan Pérez", "Calle Falsa 123", "555-1234",
+                        "juan@example.com", Date.valueOf("1990-01-01"), "Masculino");
+                int id = createPersona(con, nuevaPersona);
+                System.out.println("Persona creada con ID: " + id);
+
+                // Leer
+                PersonaCode persona = getPersonaById(con, id);
+                System.out.println("Persona leída: " + persona.getNombre());
 
             } else {
                 System.out.println("Error al conectar a la base de datos.");
@@ -39,6 +49,7 @@ public class PROYECTOVIRTUAL {
             e.printStackTrace();
         }
     }
+
     public static Connection getConnection() throws SQLException {
         Connection con = null;
         try {
@@ -49,6 +60,7 @@ public class PROYECTOVIRTUAL {
         }
         return con;
     }
+
     public static int createPersona(Connection con, PersonaCode persona) throws SQLException {
         String sql = "INSERT INTO persona (clave, nombre, domicilio, telefono, correo_electronico, fecha_nacimiento, genero) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -66,9 +78,29 @@ public class PROYECTOVIRTUAL {
                 }
             }
         }
-        return -1;
-    }
-   
-    
+        return -1;
+    }
+
+    public static PersonaCode getPersonaById(Connection con, int id) throws SQLException {
+        String sql = "SELECT * FROM persona WHERE id = ?";
+        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return new PersonaCode(
+                            rs.getInt("id"),
+                            rs.getString("clave"),
+                            rs.getString("nombre"),
+                            rs.getString("domicilio"),
+                            rs.getString("telefono"),
+                            rs.getString("correo_electronico"),
+                            rs.getDate("fecha_nacimiento"),
+                            rs.getString("genero")
+                    );
+                }
+            }
+        }
+        return null;
+    }
+
 }
-        
